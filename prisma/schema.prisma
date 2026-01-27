@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model RoomType {
+  id          String     @id @default(cuid())
+  name        String     // e.g., Deluxe Ocean View
+  description String?
+  ratePlans   RatePlan[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model RatePlan {
+  id          String   @id @default(cuid())
+  name        String   // e.g., BAR, Non-Ref
+  basePrice   Float
+  roomTypeId  String
+  roomType    RoomType @relation(fields: [roomTypeId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model OTAChannel {
+  id                String              @id @default(cuid())
+  name              String              // Agoda, Booking.com, Traveloka, Expedia, Ctrip
+  promotions        CampaignInstance[]
+  templates         PromotionTemplate[]
+}
+
+model PromotionTemplate {
+  id              String           @id @default(cuid())
+  name            String           // e.g., Booking Genius, Agoda Essential
+  otaChannelId    String
+  otaChannel      OTAChannel       @relation(fields: [otaChannelId], references: [id])
+  defaultDiscount Float            @default(0)
+  calcType        CalculationType  @default(PROGRESSIVE)
+  categoryId      String?          // For Agoda category stacking
+  instances       CampaignInstance[]
+}
+
+model CompatibilityGroup {
+  id          String   @id @default(cuid())
+  name        String   // e.g., Seasonal, NonStakable
+  description String?
+}
+
+enum CampaignType {
+  EARLY_BIRD
+  LAST_MINUTE
+  MOBILE_RATE
+  MEMBER_DEAL
+  FLASH_SALE
+  CUSTOM
+}
+
+enum CalculationType {
+  ADDITIVE
+  PROGRESSIVE
+}
+
+model CampaignInstance {
+  id              String          @id @default(cuid())
+  name            String
+  discountValue   Float           // Percentage or Fixed amount
+  isPercentage    Boolean         @default(true)
+  calcType        CalculationType 
+  applyOrder      Int             @default(0) // For Drag & Drop sorting
+  templateId      String?
+  template        PromotionTemplate? @relation(fields: [templateId], references: [id])
+  otaChannelId    String
+  otaChannel      OTAChannel      @relation(fields: [otaChannelId], references: [id])
+  isActive        Boolean         @default(true)
+  incompatibleWith String[]       // IDs of other instances
+}
+
+model PricingSheet {
+  id        String   @id @default(cuid())
+  version   String
+  data      Json     // Stores calculated rates for history
+  createdAt DateTime @default(now())
+}
