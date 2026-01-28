@@ -1,7 +1,6 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { calculateNetToBar, calculateBarToNet, getPricingBreakdown, TaxConfig, Campaign } from '@/lib/calc-engine';
+import DataManagementModal from '@/components/DataManagementModal';
 
 const INITIAL_OTA_CHANNELS = [
     { id: 'agoda', name: 'Agoda', calcType: 'ADDITIVE', defaultComm: 17 },
@@ -29,6 +28,47 @@ export default function PricingPage() {
 
     const [otaChannels, setOtaChannels] = useState(INITIAL_OTA_CHANNELS);
     const [taxConfig, setTaxConfig] = useState(DEFAULT_TAX);
+    const [isManageModalOpen, setIsManageModalOpen] = useState(false);
+
+    const refreshData = useCallback(async () => {
+        const [roomsRes, campaignsRes] = await Promise.all([
+            fetch('/api/room-types'),
+            fetch('/api/campaigns')
+        ]);
+
+        if (roomsRes.ok && campaignsRes.ok) {
+            const roomsData = await roomsRes.json();
+            const campsData = await campaignsRes.json();
+
+            // Map DB RoomTypes to workspace roomTypes (adding default value)
+            const mappedRooms = roomsData.map((r: any) => {
+                const existing = roomTypes.find(rt => rt.id === r.id);
+                return {
+                    id: r.id,
+                    name: r.name,
+                    value: existing ? existing.value : 1000000
+                };
+            });
+
+            // Map DB Campaigns to workspace campaigns (adding applyOrder)
+            const mappedCamps = campsData.map((c: any, index: number) => ({
+                id: c.id,
+                name: c.name,
+                discountValue: c.discountValue,
+                calcType: c.calcType,
+                isActive: c.isActive,
+                applyOrder: index + 1
+            }));
+
+            if (mappedRooms.length > 0) setRoomTypes(mappedRooms);
+            setCampaigns(mappedCamps);
+        }
+    }, [roomTypes]);
+
+    useEffect(() => {
+        refreshData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const addRoomType = () => {
         const newId = Math.random().toString(36).substr(2, 9);
@@ -140,10 +180,10 @@ export default function PricingPage() {
                                 Target {calculationGoal === 'BAR' ? 'Display BAR' : 'Net Revenue'}
                             </h2>
                             <button
-                                onClick={addRoomType}
-                                className="bg-gray-800 hover:bg-gray-700 text-gray-400 p-2 rounded-xl border border-gray-700 transition-all text-xs font-bold"
+                                onClick={() => setIsManageModalOpen(true)}
+                                className="bg-gray-800 hover:bg-gray-700 text-blue-400 p-2 rounded-xl border border-gray-700 transition-all text-xs font-bold"
                             >
-                                + Add Room
+                                ⚙️ Manage Rooms
                             </button>
                         </div>
 
@@ -194,10 +234,10 @@ export default function PricingPage() {
                                 Stacking Rule Engine
                             </h2>
                             <button
-                                onClick={addCampaign}
+                                onClick={() => setIsManageModalOpen(true)}
                                 className="bg-gray-800 hover:bg-gray-700 text-orange-400/80 p-2 rounded-xl border border-gray-700 transition-all text-xs font-bold"
                             >
-                                + Add Promo
+                                ⚙️ Manage Promos
                             </button>
                         </div>
 
@@ -402,6 +442,12 @@ export default function PricingPage() {
                     </button>
                 </div>
             </footer>
+
+            <DataManagementModal
+                isOpen={isManageModalOpen}
+                onClose={() => setIsManageModalOpen(false)}
+                onUpdate={refreshData}
+            />
         </div>
     );
 }

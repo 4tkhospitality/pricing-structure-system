@@ -1,0 +1,54 @@
+{
+    "updated_at": "2026-01-28T07:58:00Z",
+    "working_on": {
+        "task": "Completed project sync and deployment setup",
+        "status": "completed",
+        "files": [
+            "prisma.config.ts",
+            "next.config.ts",
+            "firebase.json",
+            ".env"
+        ],
+        "notes": "Project is live on Firebase and code is synced to GitHub main branch."
+    },
+    "pending_tasks": [
+        {
+            "task": "Phát triển tính năng CRUD cho RoomType và Campaigns",
+            "priority": "medium"
+        },
+        {
+            "task": "Nâng cấp gói Blaze để hỗ trợ Server-side Rendering (nếu cần sync động)",
+            "priority": "low"
+        }
+    ],
+    "recent_changes": [
+        {
+            "timestamp": "2026-01-28T07:55:00Z",
+            "type": "feature",
+            "description": "Configured remote GitHub repository and pushed code to main branch.",
+            "files": [
+                "git remote"
+            ]
+        },
+        {
+            "timestamp": "2026-01-28T07:45:00Z",
+            "type": "fix",
+            "description": "Transitioned to Prisma 7 configuration and successfully synced schema to Supabase using direct connection.",
+            "files": [
+                "prisma/schema.prisma",
+                "prisma.config.ts",
+                ".env"
+            ]
+        }
+    ],
+    "decisions_made": [
+        {
+            "decision": "Dùng port 5432 để npx prisma db push",
+            "reason": "Supabase Pooler (6543) thường giới hạn các câu lệnh DDL dài gây treo process."
+        },
+        {
+            "decision": "Đổi tên branch Git mặc định từ master sang main",
+            "reason": "Tuân theo chuẩn chung của GitHub và cộng đồng."
+        }
+    ]
+}

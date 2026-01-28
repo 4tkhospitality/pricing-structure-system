@@ -1,0 +1,85 @@
+{
+    "meta": {
+        "schema_version": "1.1.0",
+        "awf_version": "4.0.0"
+    },
+    "project": {
+        "name": "pricing-structure-system",
+        "type": "Next.js Rate Management Web App",
+        "status": "In Development (Static Export Mode)",
+        "github_repo": "https://github.com/4tkhospitality/pricing-structure-system"
+    },
+    "tech_stack": {
+        "frontend": {
+            "framework": "Next.js 16 (Canary)",
+            "styling": "Tailwind CSS v4",
+            "ui_mode": "Premium Dark Mode",
+            "build_type": "Static Export (output: export)"
+        },
+        "backend": {
+            "runtime": "Node.js (Static)",
+            "orm": "Prisma 7 (Configured via prisma.config.ts)"
+        },
+        "database": {
+            "type": "PostgreSQL (Supabase)",
+            "region": "ap-southeast-2 (Sydney)"
+        }
+    },
+    "database_schema": {
+        "summary": "Hệ thống lưu trữ cơ cấu giá phòng khách hàng (RoomType), các chương trình khuyến mãi (CampaignInstance) và bảng tính giá (PricingSheet).",
+        "tables": [
+            {
+                "name": "RoomType",
+                "columns": [
+                    "id",
+                    "name",
+                    "description"
+                ]
+            },
+            {
+                "name": "RatePlan",
+                "columns": [
+                    "id",
+                    "name",
+                    "basePrice",
+                    "roomTypeId"
+                ]
+            },
+            {
+                "name": "CampaignInstance",
+                "columns": [
+                    "id",
+                    "name",
+                    "discountValue",
+                    "calcType",
+                    "isActive"
+                ]
+            },
+            {
+                "name": "PricingSheet",
+                "columns": [
+                    "id",
+                    "version",
+                    "data"
+                ]
+            }
+        ]
+    },
+    "features": [
+        "Rate Workspace: Trình giả lập tính toán giá NET/BAR thời gian thực",
+        "OTA Channel Sync: Quản lý hoa hồng và logic tính (Progressive/Additive) cho từng kênh",
+        "Stacking Rule Engine: Cơ chế cộng dồn khuyến mãi đa tầng",
+        "Static Multi-page Routing: Hỗ trợ navigation /pricing, /parity, /compset trên Firebase Hosting"
+    ],
+    "knowledge_items": {
+        "patterns": [
+            "Mobile-first calculation engine logic in src/lib/calc-engine.ts"
+        ],
+        "gotchas": [
+            "Firebase App Hosting (Next.js SSR) yêu cầu gói Blaze. Hiện dùng Standard Hosting + Static Export.",
+            "Prisma 7 yêu cầu cấu hình connection URL trong prisma.config.ts, không dùng env() trực tiếp trong schema.prisma.",
+            "Khi đẩy schema lên Supabase qua pooler (6543) có thể bị treo, nên dùng port 5432 (direct) cho npx prisma db push.",
+            "Next.js Static Export cần images.unoptimized: true để chạy trên Firebase Standard."
+        ]
+    }
+}

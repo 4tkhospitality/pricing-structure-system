@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
+  engineType = "binary"
 }
 
 datasource db {
@@ -72,8 +73,8 @@ model CampaignInstance {
   applyOrder      Int             @default(0) // For Drag & Drop sorting
   templateId      String?
   template        PromotionTemplate? @relation(fields: [templateId], references: [id])
-  otaChannelId    String
-  otaChannel      OTAChannel      @relation(fields: [otaChannelId], references: [id])
+  otaChannelId    String?
+  otaChannel      OTAChannel?      @relation(fields: [otaChannelId], references: [id])
   isActive        Boolean         @default(true)
   incompatibleWith String[]       // IDs of other instances
 }
