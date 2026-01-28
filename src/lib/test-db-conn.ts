@@ -10,8 +10,8 @@ async function testConnection() {
         console.log('Connecting to:', process.env.DATABASE_URL?.replace(/:[^:@]+@/, ':***@'));
         await client.connect();
         console.log('✅ Connected successfully!');
-        const res = await client.query('SELECT NOW()');
-        console.log('Current time from DB:', res.rows[0]);
+        const res = await client.query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'");
+        console.log('Existing tables:', res.rows.map(r => r.table_name));
         await client.end();
     } catch (err) {
         console.error('❌ Connection failed:', err);
