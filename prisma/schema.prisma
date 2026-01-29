@@ -29,6 +29,8 @@ model RatePlan {
 model OTAChannel {
   id                String              @id @default(cuid())
   name              String              // Agoda, Booking.com, Traveloka, Expedia, Ctrip
+  calcType          CalculationType     @default(PROGRESSIVE)
+  defaultComm       Float               @default(15)
   promotions        CampaignInstance[]
   templates         PromotionTemplate[]
 }

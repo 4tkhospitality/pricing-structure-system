@@ -1,54 +1,47 @@
 {
-    "updated_at": "2026-01-28T07:58:00Z",
-    "working_on": {
-        "task": "Completed project sync and deployment setup",
-        "status": "completed",
-        "files": [
-            "prisma.config.ts",
-            "next.config.ts",
-            "firebase.json",
-            ".env"
-        ],
-        "notes": "Project is live on Firebase and code is synced to GitHub main branch."
-    },
-    "pending_tasks": [
-        {
-            "task": "Phát triển tính năng CRUD cho RoomType và Campaigns",
-            "priority": "medium"
-        },
-        {
-            "task": "Nâng cấp gói Blaze để hỗ trợ Server-side Rendering (nếu cần sync động)",
-            "priority": "low"
-        }
-    ],
-    "recent_changes": [
-        {
-            "timestamp": "2026-01-28T07:55:00Z",
-            "type": "feature",
-            "description": "Configured remote GitHub repository and pushed code to main branch.",
+    "session_id": "debug-pricing-and-persistence",
+    "technical_level": "technical",
+    "updated_at": "2026-01-29T09:32:00Z",
+    "status": {
+        "working_on": {
+            "feature": "Bug Fixes (Calculation & Persistence)",
+            "task": "Resolved price logic errors and Prisma 7 sync issues",
+            "status": "completed",
             "files": [
-                "git remote"
-            ]
-        },
-        {
-            "timestamp": "2026-01-28T07:45:00Z",
-            "type": "fix",
-            "description": "Transitioned to Prisma 7 configuration and successfully synced schema to Supabase using direct connection.",
-            "files": [
+                "src/components/pricing/OTAConfigTab.tsx",
+                "src/components/pricing/RoomTypesTab.tsx",
                 "prisma/schema.prisma",
-                "prisma.config.ts",
-                ".env"
+                "prisma.config.ts"
             ]
-        }
-    ],
-    "decisions_made": [
-        {
-            "decision": "Dùng port 5432 để npx prisma db push",
-            "reason": "Supabase Pooler (6543) thường giới hạn các câu lệnh DDL dài gây treo process."
         },
-        {
-            "decision": "Đổi tên branch Git mặc định từ master sang main",
-            "reason": "Tuân theo chuẩn chung của GitHub và cộng đồng."
-        }
-    ]
+        "pending_tasks": [
+            "Final verification of Overview tab price matrix",
+            "Add confirmation modal for destructive actions",
+            "Explore production API deployment options (Vercel/Cloud Run)"
+        ],
+        "recent_changes": [
+            "Fixed pricing formula: changed from subtraction to inverse division (Net markup)",
+            "Resolved Prisma 7 'db push' hangs by configuring DIRECT_URL in prisma.config.ts",
+            "Improved RoomTypesTab with thousand separators (1.000.000 format)",
+            "Implemented Optimistic UI for Room Management with error handling",
+            "Cleaned up schema.prisma to remove deprecated 'url' properties"
+        ],
+        "errors_encountered": [
+            {
+                "error": "Prisma 7 P1012 (url property in schema)",
+                "solution": "Removed url from schema.prisma, moved to prisma.config.ts",
+                "resolved": true
+            },
+            {
+                "error": "API 500 on Room Creation",
+                "solution": "Performed db push --force-reset after fixing Direct URL connection",
+                "resolved": true
+            }
+        ],
+        "decisions_made": [
+            "Using division formula for marking up Net to Display prices",
+            "Using DIRECT_URL exclusively for Prisma CLI operations",
+            "Applying Optimistic UI to allow seamless workflow during DB sync issues"
+        ]
+    }
 }
