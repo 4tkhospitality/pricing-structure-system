@@ -161,19 +161,19 @@ export default function OverviewTab({
 
                         <div className="flex flex-col md:flex-row gap-4 items-end">
                             <div className="w-full md:w-72">
-                                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Chế độ tính toán</label>
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Khách Sạn Mong muốn</label>
                                 <select
                                     value={bulkMode}
                                     onChange={(e) => setBulkMode(e.target.value as any)}
                                     className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none focus:border-indigo-500 transition-all font-bold text-sm"
                                 >
-                                    <option value="net-to-display">🏨 Muốn thu về (NET) → Giá Bán</option>
-                                    <option value="display-to-net">🌐 Giá Bán OTA → Thu về (NET)</option>
+                                    <option value="net-to-display">🏨 Giá thu về như nhau trên các kênh OTA</option>
+                                    <option value="display-to-net">🌐 Các kênh OTA hiện giá bán giống nhau</option>
                                 </select>
                             </div>
                             <div className="w-full md:w-72">
                                 <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">
-                                    {bulkMode === 'net-to-display' ? 'Số tiền thực nhận (VND)' : 'Giá hiển thị trên OTA (VND)'}
+                                    Nhập số tiền
                                 </label>
                                 <input
                                     type="text"

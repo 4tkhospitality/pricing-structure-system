@@ -2,6 +2,23 @@
 
 ## [2026-01-29]
 ### Added
+- **UI Branding Refresh**: Updated all titles and labels to new Vietnamese branding (e.g., "Nhìn Tổng thể").
+- **OTA Default Rates**: Agoda 20%, Booking 18%, Expedia 17%, Traveloka 17%, CTRIP 18%.
+- **Manual Deployment Workflow**: Standardized deployment to `pricing-structure-system` project.
+
+### Fixed
+- **JSX Syntax**: Escaped `->` in component labels for build stability.
+- **Firebase Project Error**: Resolved deployment hang due to missing active project ID.
+- **Duplicate Return**: Fixed multiple `return` statements in `AgodaPricingTab.tsx`.
+
+### Changed
+- **Agoda UI Overhaul**:
+    - **Reordering**: Moved "Channel Settings" above "Promotion Stack".
+    - **Localization**: Full Vietnamese translation ("Cộng dồn khuyến mãi", "Thêm Khuyến Mãi", "Cài đặt hoa hồng", "Lũy tiến", "Cộng dồn", "Cách diễn giải tính toán từng bước").
+    - **Workflow**: Updated Calculator flow to: Choose Room -> Choose Direction (NET/BAR) -> Input Price -> Result.
+    - **Defaults**: Commission 20%, Additive Mode.
+    - **UX**: Input field now formats numbers with thousands separators (e.g., 4.000.000) for better readability.
+### Added
 - RatePlan CRUD API endpoints (`/api/rate-plans`).
 - OTAChannel CRUD API endpoints (`/api/ota-channels`).
 - New fields `calcType` and `defaultComm` to `OTAChannel` model.

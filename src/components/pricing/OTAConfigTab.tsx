@@ -311,26 +311,26 @@ export default function OTAConfigTab({
                         </div>
 
                         <div>
-                            <label className="block text-sm text-slate-400 mb-2">Hướng tính</label>
+                            <label className="block text-sm text-slate-400 mb-2">Cách tính toán</label>
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => setCalcMode('net-to-display')}
                                     className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${calcMode === 'net-to-display' ? 'bg-indigo-600 text-white' : 'bg-slate-700 text-slate-400'}`}
                                 >
-                                    Giá nhận về → Hiển thị
+                                    Nhập giá nhận về {"->"} Giá hiển thị
                                 </button>
                                 <button
                                     onClick={() => setCalcMode('display-to-net')}
                                     className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${calcMode === 'display-to-net' ? 'bg-indigo-600 text-white' : 'bg-slate-700 text-slate-400'}`}
                                 >
-                                    Giá hiển thị → Nhận về
+                                    Nhập giá hiển thị {"->"} Giá nhận về
                                 </button>
                             </div>
                         </div>
 
                         <div>
                             <label className="block text-sm text-slate-400 mb-2">
-                                {calcMode === 'net-to-display' ? 'Nhập Số tiền thực nhận (VND)' : 'Nhập Giá hiển thị OTA (VND)'}
+                                Nhập số tiền
                             </label>
                             <input
                                 type="text"
@@ -357,7 +357,7 @@ export default function OTAConfigTab({
                     {/* Result */}
                     <div className="flex flex-col justify-center items-center bg-slate-900/50 rounded-lg p-6 border-2" style={{ borderColor: brandColor + '33' }}>
                         <div className="text-sm text-slate-400 mb-2 font-medium">
-                            {calcMode === 'net-to-display' ? 'Cần bán trên OTA giá:' : 'Tiền bạn nhận về túi:'}
+                            {calcMode === 'net-to-display' ? 'Giá hiển thị ra ngoài của OTA' : 'Tiền bạn nhận về túi:'}
                         </div>
                         <div className="text-3xl font-black font-mono" style={{ color: brandColor }}>
                             {formatNumber(calculatedResult.result)} ₫

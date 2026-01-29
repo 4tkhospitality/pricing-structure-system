@@ -53,7 +53,7 @@ export default function RoomTypesTab({ roomTypes, onRoomTypesChange }: RoomTypes
             const res = await fetch('/api/room-types', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: newName, description: '' })
+                body: JSON.stringify({ name: newName, description: '', basePrice: newPrice })
             });
 
             if (res.ok) {
@@ -121,9 +121,9 @@ export default function RoomTypesTab({ roomTypes, onRoomTypesChange }: RoomTypes
 
         try {
             const res = await fetch(`/api/room-types/${editingId}`, {
-                method: 'PUT',
+                method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: editName })
+                body: JSON.stringify({ name: editName, basePrice: editPrice })
             });
             if (res.ok) {
                 onRoomTypesChange(roomTypes.map(r =>

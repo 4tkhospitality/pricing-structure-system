@@ -6,6 +6,8 @@ import TabContainer from '@/components/pricing/TabContainer';
 import RoomTypesTab from '@/components/pricing/RoomTypesTab';
 import OTAConfigTab from '@/components/pricing/OTAConfigTab';
 import OverviewTab from '@/components/pricing/OverviewTab';
+import AgodaPricingTab from '@/components/pricing/agoda/AgodaPricingTab';
+import { AgodaPricingSettings, CalculationMode } from '@/types/agoda';
 
 // OTA Brand Colors
 const OTA_BRANDS = [
@@ -52,18 +54,43 @@ export default function PricingPage() {
             id: ota.id,
             name: ota.name,
             calcType: ota.id === 'agoda' ? 'ADDITIVE' : 'PROGRESSIVE',
-            defaultComm: ota.id === 'agoda' ? 17 : ota.id === 'expedia' ? 18 : 15,
+            defaultComm: ota.id === 'agoda' ? 20 :
+                ota.id === 'booking' ? 18 :
+                    ota.id === 'expedia' ? 17 :
+                        ota.id === 'traveloka' ? 17 :
+                            ota.id === 'ctrip' ? 18 : 15,
             promotions: []
         }))
     );
     const [selectedRoomIds, setSelectedRoomIds] = useState<string[]>([]);
     const [taxConfig] = useState(DEFAULT_TAX);
+    const [agodaSettings, setAgodaSettings] = useState<AgodaPricingSettings | null>(null);
+
+    // Fetch Agoda settings
+    useEffect(() => {
+        fetch('/api/settings/ota_pricing_agoda_v1')
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+                if (data) setAgodaSettings(data);
+            })
+            .catch(console.error);
+    }, []);
+
+    const handleAgodaSettingsChange = (newSettings: AgodaPricingSettings) => {
+        setAgodaSettings(newSettings);
+        // Auto-save
+        fetch('/api/settings/ota_pricing_agoda_v1', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newSettings)
+        }).catch(console.error);
+    };
 
     // Define tabs
     const tabs = [
         { id: 'room-types', label: 'Hạng Phòng', color: '#6366f1' },
         ...OTA_BRANDS.map(ota => ({ id: ota.id, label: ota.name, color: ota.color })),
-        { id: 'overview', label: 'Tổng Quan', color: '#10b981' }
+        { id: 'overview', label: 'Tổng thể', color: '#10b981' }
     ];
 
     // Fetch initial data
@@ -192,6 +219,16 @@ export default function PricingPage() {
         }
 
         // OTA Config Tabs
+        if (activeTab === 'agoda') {
+            return (
+                <AgodaPricingTab
+                    roomTypes={roomTypes}
+                    initialSettings={agodaSettings || undefined}
+                    onSettingsChange={handleAgodaSettingsChange}
+                />
+            );
+        }
+
         const otaConfig = otaConfigs.find(o => o.id === activeTab);
         const otaBrand = OTA_BRANDS.find(o => o.id === activeTab);
         if (otaConfig && otaBrand) {
@@ -221,9 +258,9 @@ export default function PricingPage() {
             {/* Header */}
             <header className="bg-slate-800 border-b border-slate-700">
                 <div className="max-w-7xl mx-auto px-6 py-4">
-                    <h1 className="text-2xl font-bold">Pricing Calculator</h1>
+                    <h1 className="text-2xl font-bold">Bảng tính cấu trúc giá OTA</h1>
                     <p className="text-slate-400 text-sm mt-1">
-                        Cấu hình giá từng bước: Hạng phòng → OTA Channels → Tổng quan
+                        Cấu hình giá từng bước: Hạng phòng → Từng kênh OTA → Nhìn Tổng thể
                     </p>
                 </div>
             </header>

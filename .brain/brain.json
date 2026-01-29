@@ -1,6 +1,6 @@
 {
     "project_name": "Pricing Structure System",
-    "repo_url": "https://github.com/Antigravity-Solutions/pricing-structure-system.git",
+    "repo_url": "https://github.com/4tkhospitality/pricing-structure-system",
     "tech_stack": {
         "frontend": "Next.js 16 (Turbopack), React 19, Tailwind CSS 4",
         "database": {
@@ -8,75 +8,74 @@
             "orm": "Prisma 7.3.0",
             "adapter": "@prisma/adapter-pg"
         },
-        "hosting": "Firebase Standard Hosting (Static Export)"
-    },
-    "deployment": {
-        "current_url": "https://pricing-structure-system.web.app/",
-        "strategy": "Static Export (output: 'export')",
-        "caveats": "Server-side dynamic features (API routes, server actions) are only available in local dev."
+        "hosting": "Firebase Hosting (Static Export)",
+        "deployment_id": "pricing-structure-system"
     },
     "database_schema": {
-        "summary": "Lưu thông tin về RoomTypes, RatePlans, OTAChannels và Campaigns.",
+        "summary": "Lưu thông tin về RoomTypes (với basePrice), RatePlans, OTAChannels và Campaigns.",
         "tables": [
-            "RoomType: Danh mục phòng (đã đồng bộ thành công)",
-            "RatePlan: Gói giá (liên kết với RoomType)",
-            "OTAChannel: Kênh OTA với commission & calcType",
-            "CampaignInstance: Chương trình khuyến mãi"
+            "RoomType: Có thêm cột basePrice (Giá nhận về NET)",
+            "RatePlan: Gói giá (mở rộng từ RoomType)",
+            "OTAChannel: Cấu hình kênh và Commission",
+            "CampaignInstance: Khuyến mãi linh hoạt"
         ],
-        "relationships_explained": "1 RoomType -> nhiều RatePlans; 1 OTAChannel -> nhiều CampaignInstances."
+        "relationships_explained": "Dữ liệu được lưu trữ trên Supabase Cloud, kết nối qua Prisma Client."
     },
     "api_endpoints": [
         {
             "path": "/api/room-types",
-            "description": "CRUD danh mục phòng (Đã fix 500 error)"
+            "description": "Lấy và thêm hạng phòng (có basePrice)"
         },
         {
-            "path": "/api/campaigns",
-            "description": "CRUD chương trình khuyến mãi"
-        },
-        {
-            "path": "/api/rate-plans",
-            "description": "CRUD gói giá"
+            "path": "/api/room-types/[id]",
+            "description": "Sửa/Xóa hạng phòng (Sử dụng PATCH)"
         },
         {
             "path": "/api/ota-channels",
-            "description": "CRUD kênh OTA"
+            "description": "Cấu hình kênh OTA"
         }
     ],
     "features": [
         {
-            "name": "Inverse Pricing Calculation",
+            "name": "Bảng tính cấu trúc giá OTA",
             "status": "implemented",
-            "description": "Tính toán giá bán bù đắp hoa hồng/KM (Net / (1-Comm) / (1-Disc))"
+            "description": "Tab-based UI with specific branding: Hạng phòng -> Từng kênh OTA -> Nhìn Tổng thể."
         },
         {
-            "name": "Optimistic UI Room Management",
+            "name": "Unified Bulk Calculator",
             "status": "implemented",
-            "description": "Thêm phòng real-time ngay cả khi DB chậm, có nhãn 'Offline' nếu lỗi API"
+            "description": "Tính giá đồng bộ (Straight Line UI) với các chế độ thu về NET hoặc đồng đều giá bán."
         },
         {
-            "name": "Live Calculator Preview",
+            "name": "Manual Firebase Deployment",
             "status": "implemented",
-            "description": "Công cụ kiểm tra giá 2 chiều (Net <-> Display) trong mỗi tab OTA"
+            "description": "Xử lý lỗi project id bằng lệnh firebase deploy --project pricing-structure-system."
+        },
+        {
+            "name": "Agoda UI Refinement & Localization",
+            "status": "implemented",
+            "description": "Vietnamese localized UI, reordered layout (Settings > Promotions), Step-by-step calculator with thousands separator, and updated default settings (20%, Additive)."
         }
     ],
     "knowledge_items": {
         "patterns": [
-            "Optimistic UI cho Room Management",
-            "Inverse calculation logic cho pricing engine"
+            "Grid-based layout cho Calculator",
+            "PATCH method cho updates để tối ưu payload",
+            "Escaping '->' in JSX labels using {'->'}",
+            "Input number formatting using toLocaleString and regex replacement"
         ],
         "gotchas": [
             {
-                "issue": "Prisma 7 url property",
-                "resolution": "Move all url/directUrl to prisma.config.ts, schema.prisma must NOT contain them."
+                "issue": "Next.js Static Build vs Dynamic APIs",
+                "resolution": "Cấm để 'output: export' nếu muốn chạy Database trên localhost. Chỉ bật khi deploy hosting tĩnh."
             },
             {
-                "issue": "Supabase Pooling vs CLI",
-                "resolution": "Always use DIRECT_URL (port 5432) for db push/migrate in Prisma 7."
+                "issue": "Firebase Hosting limitations",
+                "resolution": "Bản Hosting tĩnh không hỗ trợ lệnh ghi trực tiếp. Cần dùng localhost cho CMS/Admin tasks."
             },
             {
-                "issue": "Pricing Logic",
-                "resolution": "Must use division for marking up prices, not addition, to accommodate cumulative discounts."
+                "issue": "Firebase CLI Project ID",
+                "resolution": "Nếu lỗi 'No active project', cần dùng flag --project pricing-structure-system."
             }
         ]
     }

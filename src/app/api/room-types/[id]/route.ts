@@ -13,6 +13,7 @@ export async function PATCH(
             data: {
                 name: body.name,
                 description: body.description,
+                basePrice: body.basePrice,
             },
         });
         return NextResponse.json(roomType);

@@ -18,7 +18,8 @@ export async function POST(request: Request) {
         const roomType = await prisma.roomType.create({
             data: {
                 name: body.name,
-                description: body.description,
+                description: body.description || '',
+                basePrice: body.basePrice || 0,
             },
         });
         return NextResponse.json(roomType);

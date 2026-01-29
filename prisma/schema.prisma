@@ -11,6 +11,7 @@ model RoomType {
   id          String     @id @default(cuid())
   name        String     // e.g., Deluxe Ocean View
   description String?
+  basePrice   Float      @default(0)
   ratePlans   RatePlan[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -86,4 +87,11 @@ model PricingSheet {
   version   String
   data      Json     // Stores calculated rates for history
   createdAt DateTime @default(now())
+}
+
+model HotelSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  updatedAt DateTime @updatedAt
 }
